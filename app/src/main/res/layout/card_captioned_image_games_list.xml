@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/card_view"
+    android:layout_width="match_parent" android:layout_height="40dp"
+    android:layout_margin="5dp"
+    card_view:cardCornerRadius="4dp"
+
+    >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+
+        <ImageView android:id="@+id/team_image_a"
+            android:layout_height="match_parent"
+            android:layout_width="40dp"
+            android:layout_alignParentRight="true"
+            android:padding="3dp"
+            android:gravity="center"/>
+
+        <TextView
+            android:id="@+id/team_text_a"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_toLeftOf="@id/team_image_a"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:padding="3dp"
+            android:gravity="center"
+            />
+        <TextView
+            android:id="@+id/result_text"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_toLeftOf="@id/team_text_a"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:padding="3dp"
+            android:gravity="center"
+            />
+        <TextView
+            android:id="@+id/team_text_h"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_toLeftOf="@id/result_text"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:padding="3dp"
+            android:gravity="center"
+            />
+
+        <ImageView android:id="@+id/team_image_h"
+            android:layout_height="match_parent"
+            android:layout_width="40dp"
+            android:layout_toLeftOf="@id/team_text_h"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:padding="3dp"
+            android:gravity="right"/>
+
+        <TextView
+            android:id="@+id/timestamp_text"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_toRightOf="@id/team_image_h"
+            android:layout_centerVertical="true"
+            android:padding="3dp"
+            android:gravity="center"
+            />
+
+    </RelativeLayout>
+</android.support.v7.widget.CardView>

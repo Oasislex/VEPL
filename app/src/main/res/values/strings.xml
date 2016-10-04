@@ -1,0 +1,40 @@
+<resources>
+    <string name="app_name">VEPL</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_share">Share</string>
+    <string name="team_squad">SQUAD</string>
+    <string name="GK">Goalkeepers</string>
+    <string name="DF">Defenders</string>
+    <string name="MD">Midfielders</string>
+    <string name="FW">Forwards</string>
+    <string name="grid">Fixture history</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="home_fragment">Home Fragment</string>
+    <string name="draft_fragment">Draft Fragment</string>
+    <string name="transfers_fragment">Transfers Fragment</string>
+    <string name="teams_fragment">Teams Fragment</string>
+    <string name="games_fragment">Games Fragment</string>
+    <string name="squad">Squad</string>
+    <string name="open_drawer">Open drawer</string>
+    <string name="close_drawer">Close drawer</string>
+    <string name="pick">Pick</string>
+    <string name="draft_notification">Manager Oasis pick player!</string>
+
+    <string name="penalty">(P)</string>
+    <string name="own_goal">(OG)</string>
+
+    <string-array name="titles">
+        <item>Home</item>
+        <item>Draft</item>
+        <item>Transfers</item>
+        <item>Teams</item>
+        <item>Games</item>
+        <item>Table</item>
+    </string-array>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_team_detail">TeamDetailActivity</string>
+    <string name="title_activity_game_detail">GameDetailActivity</string>
+    <string name="title_activity_player">PlayerActivity</string>
+</resources>

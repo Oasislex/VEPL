@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="by.scherbakov.vepl.GameDetailActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_weight="1.0"
+        android:orientation="horizontal">
+        <ImageView android:id="@+id/home_team_image"
+            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:scaleType="fitCenter"
+            android:layout_weight="2.0"
+            android:layout_gravity="left"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"/>
+
+
+        <TextView
+            android:id="@+id/score_status_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textAlignment="center"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center"
+            android:layout_weight="1.0"
+
+            />
+
+        <ImageView android:id="@+id/away_team_image"
+            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:scaleType="fitCenter"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_weight="2.0"
+            android:layout_gravity="right"/>
+    </LinearLayout>
+    <TextView
+        android:id="@+id/match_status_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:layout_gravity="center"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="5.0"
+        android:orientation="horizontal">
+        <FrameLayout
+            android:id="@+id/home_scorers_frame"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="vertical"
+            android:layout_weight="1.0"></FrameLayout>
+        <FrameLayout
+            android:id="@+id/away_scorers_frame"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="vertical"
+            android:layout_weight="1.0"></FrameLayout>
+    </LinearLayout>
+
+</LinearLayout>
