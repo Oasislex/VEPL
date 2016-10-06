@@ -22,8 +22,12 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
 
 
 /**
@@ -37,9 +41,13 @@ public class GamesMaterialFragment extends Fragment {
     private final static String SECOND_LOGO_HIGH_URL = "/logo.png/_jcr_content/renditions/cq5dam.thumbnail.200.200.png";
     private final static String HTML_GAMES_URL = "http://www.premierleague.com/";
     private final static String HTML_LOGO_URL = "http://platform-static-files.s3.amazonaws.com/premierleague/badges/t";
+    private final static String FIXTURES_JSON_URL = "https://fantasy.premierleague.com/drf/fixtures/";
+    private final static String TEAMS_JSON_URL = "https://fantasy.premierleague.com/drf/teams/";
 
-    private JSONObject jsonTeams;
+    private JSONArray jsonTeams;
     private int startPosition;
+    private static long WEEK = 604800000l;
+    private static int START_MATCH_ID = 14039;
 
     public GamesMaterialFragment() {
         // Required empty public constructor
@@ -51,8 +59,8 @@ public class GamesMaterialFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         RecyclerView gameRecycler = (RecyclerView) inflater.inflate(R.layout.fragment_games_material, container, false);
-        //new JSONParse(gameRecycler).execute(GAMES_HEADER_URL, LIST_CLUBS_URL);
-        new HTMLParse(gameRecycler).execute(HTML_GAMES_URL);
+        new JSONParse(gameRecycler).execute(FIXTURES_JSON_URL, TEAMS_JSON_URL);
+        //new HTMLParse(gameRecycler).execute(HTML_GAMES_URL);
         return gameRecycler;
     }
 
@@ -173,7 +181,7 @@ public class GamesMaterialFragment extends Fragment {
 
     }
 
-    class JSONParse extends AsyncTask<String, Void, JSONObject> {
+    class JSONParse extends AsyncTask<String, Void, JSONArray> {
         private String url1;
         private String url2;
         private final WeakReference<RecyclerView> gameRecyclerReference;
@@ -184,81 +192,91 @@ public class GamesMaterialFragment extends Fragment {
         }
 
         @Override
-        protected JSONObject doInBackground(String... args) {
+        protected JSONArray doInBackground(String... args) {
             url1 = args[0];
             url2 = args[1];
             JSONParser jParser = new JSONParser();
 
             // Getting JSON from URL
-            JSONObject json = jParser.getJSONFromUrl(url1);
-            jsonTeams = jParser.getJSONFromUrl(url2);
+            JSONArray json = jParser.getJSONArrayFromUrl(url1);
+            jsonTeams = jParser.getJSONArrayFromUrl(url2);
             return json;
         }
         @Override
-        protected void onPostExecute(JSONObject json) {
+        protected void onPostExecute(JSONArray json) {
 
             try {
-                //получение массива seasons
-                JSONArray matches = json.getJSONObject("siteHeaderSection").getJSONArray("matches");
 
+                HashMap<Integer, Team> teamsMap = new HashMap<Integer, Team>();
 
-                final String[] captionsHome = new String[matches.length()];
-                final String[] imageIdsHome = new String[matches.length()];
-                final String[] scores = new String[matches.length()];
-                final String[] captionsAway = new String[matches.length()];
-                final String[] imageIdsAway = new String[matches.length()];
-                final int[] matchesId = new int[matches.length()];
-                for (int i=0; i<matches.length(); i++) {
+                for(int i=0; i<jsonTeams.length(); i++){
+                    Team teamMap = new Team(((JSONObject)jsonTeams.get(i)).getInt("code"));
+                    teamMap.setTeamName(((JSONObject)jsonTeams.get(i)).getString("name"));
+                    teamMap.setTeamImageResource(HTML_LOGO_URL + ((JSONObject)jsonTeams.get(i)).getInt("code") + ".png" );
+                    teamsMap.put(((JSONObject)jsonTeams.get(i)).getInt("id"), teamMap);
+                }
 
-                    matchesId[i] = matches.getJSONObject(i).getInt("matchId");
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+                Calendar now = Calendar.getInstance();
+                long nowMillis = now.getTimeInMillis();
+                int amountGames = 0;
 
-                    int homeTeamId = matches.getJSONObject(i).getInt("homeTeamId");
-                    int awayTeamId = matches.getJSONObject(i).getInt("awayTeamId");
+                for(int i=0; i<json.length(); i++){
+                    try {
+                        Date parsedDate = dateFormat.parse(((JSONObject)json.get(i)).getString("kickoff_time").substring(0, ((JSONObject)json.get(i)).getString("kickoff_time").length()-1));
+                        Calendar mydate = new GregorianCalendar();
+                        mydate.setTime(parsedDate);
+                        long mydateMillis = mydate.getTimeInMillis();
 
-                    //получение массива seasons
-                    JSONArray seasons = jsonTeams.getJSONObject("abstractCacheWebRootElement").getJSONArray("seasons");
-                    //получение массива команд в текущем сезоне
-                    JSONArray currentSeasonTeams = seasons.getJSONObject(0).getJSONArray("seasonTeams");
-
-                    for (int j=0; j<currentSeasonTeams.length(); j++) {
-
-                        int teamId = currentSeasonTeams.getJSONObject(j).getInt("teamId");
-                        if (teamId == homeTeamId){
-                            captionsHome[i] = currentSeasonTeams.getJSONObject(j).getString("teamDisplayFullName");
-                            String clubURLName = currentSeasonTeams.getJSONObject(j).getString("clubURLName");
-                            imageIdsHome[i] = FIRST_LOGO_URL + clubURLName.charAt(0) + "/" + clubURLName + SECOND_LOGO_HIGH_URL;
-                        }else if(teamId == awayTeamId){
-                            captionsAway[i] = currentSeasonTeams.getJSONObject(j).getString("teamDisplayFullName");
-                            String clubURLName = currentSeasonTeams.getJSONObject(j).getString("clubURLName");
-                            imageIdsAway[i] = FIRST_LOGO_URL + clubURLName.charAt(0) + "/" + clubURLName + SECOND_LOGO_HIGH_URL;
+                        if((mydateMillis > nowMillis - WEEK) && (mydateMillis < nowMillis + WEEK)){
+                            amountGames++;
                         }
 
-
+                    } catch (ParseException e) {
+                        e.printStackTrace();
                     }
-
-                    String status = matches.getJSONObject(i).getString("matchState");
-
-
-                    if (status.equals("POST_MATCH")) {
-                        int homeScore = matches.getJSONObject(i).getJSONObject("score").getInt("home");
-                        int awayScore = matches.getJSONObject(i).getJSONObject("score").getInt("away");
-                        scores[i] = String.valueOf(homeScore) + "-" + String.valueOf(awayScore);
-                        startPosition = i+1;
-                    }else if (status.equals("LIVE")) {
-                        int homeScore = matches.getJSONObject(i).getJSONObject("score").getInt("home");
-                        int awayScore = matches.getJSONObject(i).getJSONObject("score").getInt("away");
-                        scores[i] = "LIVE " + String.valueOf(homeScore) + "-" + String.valueOf(awayScore);
-                    }else {
-                        long timestamp = matches.getJSONObject(i).getLong("timestamp");
-                        Date d = new Date(timestamp);
-                        DateFormat df = new SimpleDateFormat("dd.MM.yyyy HH:mm");
-                        String reportDate = df.format(d);
-                        scores[i] = reportDate;
-                    }
-
-
-
                 }
+
+                final String[] captionsHome = new String[amountGames];
+                final String[] imageIdsHome = new String[amountGames];
+                final String[] scores = new String[amountGames];
+                final String[] captionsAway = new String[amountGames];
+                final String[] imageIdsAway = new String[amountGames];
+                final int[] matchesId = new int[amountGames];
+
+                int j = 0;
+
+                for(int i=0; i<json.length(); i++){
+                    try {
+                        Date parsedDate = dateFormat.parse(((JSONObject)json.get(i)).getString("kickoff_time"));
+                        Calendar mydate = new GregorianCalendar();
+                        mydate.setTime(parsedDate);
+                        long mydateMillis = mydate.getTimeInMillis();
+
+                        if((mydateMillis > nowMillis - WEEK) && (mydateMillis < nowMillis + WEEK)){
+                            matchesId[j] = START_MATCH_ID + ((JSONObject)json.get(i)).getInt("id");
+                            captionsHome[j] = teamsMap.get(((JSONObject)json.get(i)).getInt("team_h")).getTeamName();
+                            imageIdsHome[j] = teamsMap.get(((JSONObject)json.get(i)).getInt("team_h")).getTeamImageResource();
+                            captionsAway[j] = teamsMap.get(((JSONObject)json.get(i)).getInt("team_a")).getTeamName();
+                            imageIdsAway[j] = teamsMap.get(((JSONObject)json.get(i)).getInt("team_a")).getTeamImageResource();
+                            if (((JSONObject)json.get(i)).getBoolean("finished")) {
+                                startPosition++;
+                                scores[j] = ((JSONObject)json.get(i)).getInt("team_h_score") + "-" + ((JSONObject)json.get(i)).getInt("team_a_score");
+                            }else{
+                                Date d = new Date(mydateMillis);
+                                DateFormat df = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+                                String reportDate = df.format(d);
+                                scores[j] = reportDate;
+
+                            }
+                            j++;
+                        }
+
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }
+
 
                 final RecyclerView gameRecycler = gameRecyclerReference.get();
                 CaptionedImagesGamesAdapter adapter = new CaptionedImagesGamesAdapter(captionsHome, imageIdsHome, scores, captionsAway, imageIdsAway);

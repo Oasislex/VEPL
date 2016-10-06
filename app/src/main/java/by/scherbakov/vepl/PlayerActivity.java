@@ -71,25 +71,25 @@ public class PlayerActivity extends Activity {
 
 
 
-                TextView playerName = (TextView) findViewById(R.id.player_name_text);
-                playerName.setText(firstName + " " + secondName);
-
-                ImageView playerPhoto = (ImageView) findViewById(R.id.player_image);
-
-                Picasso.with(getApplicationContext())
-                        .load(photoPlayer)
-                        .into(playerPhoto);
-
-                playerPhoto.setContentDescription(firstName + " " + secondName);
-
-                TextView playerPosition = (TextView) findViewById(R.id.position_text);
-                playerPosition.setText(positionName);
-
-                TextView teamView = (TextView) findViewById(R.id.team_text);
-                teamView.setText(teamName);
-
-                TextView newsView = (TextView) findViewById(R.id.news_text);
-                newsView.setText(news);
+//                TextView playerName = (TextView) findViewById(R.id.player_name_text);
+//                playerName.setText(firstName + " " + secondName);
+//
+//                ImageView playerPhoto = (ImageView) findViewById(R.id.player_image);
+//
+//                Picasso.with(getApplicationContext())
+//                        .load(photoPlayer)
+//                        .into(playerPhoto);
+//
+//                playerPhoto.setContentDescription(firstName + " " + secondName);
+//
+//                TextView playerPosition = (TextView) findViewById(R.id.position_text);
+//                playerPosition.setText(positionName);
+//
+//                TextView teamView = (TextView) findViewById(R.id.team_text);
+//                teamView.setText(teamName);
+//
+//                TextView newsView = (TextView) findViewById(R.id.news_text);
+//                newsView.setText(news);
 
             }catch (Exception e) {
                 e.printStackTrace();

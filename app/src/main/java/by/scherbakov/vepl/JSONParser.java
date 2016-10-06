@@ -7,6 +7,7 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -20,6 +21,7 @@ public class JSONParser {
 
 
     static JSONObject jObj = null;
+    static JSONArray jObjArray = null;
 
 
     // constructor
@@ -52,6 +54,34 @@ public class JSONParser {
         }
         // return JSON String
         return jObj;
+
+    }
+
+    public JSONArray getJSONArrayFromUrl(String url) {
+
+        // Making HTTP request
+        try {
+            OkHttpClient client = new OkHttpClient();
+            Request request = new Request.Builder()
+                    .url(url)
+                    .build();
+            Response responses = null;
+
+            try {
+                responses = client.newCall(request).execute();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            String jsonData = responses.body().string();
+            jObjArray = new JSONArray(jsonData);
+
+        } catch (JSONException e) {
+            Log.d("JSON Parser", e.getMessage());
+        } catch (IOException e) {
+            Log.d("JSON Parser", e.getMessage());
+        }
+        // return JSON String
+        return jObjArray;
 
     }
 }
